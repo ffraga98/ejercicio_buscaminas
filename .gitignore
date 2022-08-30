@@ -1,1 +1,2 @@
-./buscaminas/target
+# Ignorar el archivo compilado
+buscaminas/target/
