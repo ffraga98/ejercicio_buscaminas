@@ -22,7 +22,7 @@ Por ejemplo, se puede recibir un tablero de 5x4 como el siguiente:
 ```
 El programa debe transformarlo en esto:
 
-
+```
 1*3*1
 13*31
 .2*2.
