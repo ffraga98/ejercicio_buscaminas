@@ -1,2 +1,5 @@
 # Ignorar el archivo compilado
 buscaminas/target/
+
+# Ignorar archivo donde se almacena la solucion
+buscaminas/solucion.txt
