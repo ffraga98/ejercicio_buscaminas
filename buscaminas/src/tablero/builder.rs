@@ -1,27 +1,39 @@
 //! # Builder
-//! `builder` es un submódulo que contiene el builder para el tablero [TableroBuilder](./struct.TableroBuilder.html)
-use crate::error::ErrorMapa;
+//! `builder` es un submódulo que contiene el builder [`TableroBuilder`] para construir la entidad [`Tablero`] que contiene la lógica para resolver el problema
+//!
+//! [`Tablero`]: ../struct.Tablero.html
+
+use crate::error::error_mapa::ErrorMapa;
 use crate::tablero::casillero::Casillero;
 use crate::tablero::Tablero;
 
-/// Constante usada para separar las lineas dentro del campo casilleros.
+/// Constante usada *internamente* para separar las filas.
+///
+/// # Aclaración
+///
+/// No es necesario que el archivo contenga dicho caracter para representar una nueva línea. Con hacer uso del salto de línea es suficiente.
 pub const NUEVA_LINEA_ICONO: u8 = b'-';
-/// Constante usada para representar a la mina dentro del campo casilleros.
-const MINA_ICONO: u8 = b'*';
-/// Constante usada para representar a un casillero vacio dentro del campo casilleros.
-const ESPACIO_ICONO: u8 = b'.';
+/// Constante usada para representar a la mina.
+pub const MINA_ICONO: u8 = b'*';
+/// Constante usada para representar a un casillero vacío.
+pub const ESPACIO_ICONO: u8 = b'.';
 
-#[derive(Debug, PartialEq)]
-/// Estructura que contiene la representación del tablero en
+#[derive(Debug, PartialEq, Eq)]
+/// Estructura que contiene la representación del tablero en el formato inicial. Dicho formato debe respetar los carácteres predefinidos en las constantes que representan a las [minas][MINA_ICONO] y a los [espacios][ESPACIO_ICONO] si se desea construir satisfactoriamente el [`Tablero`].
 pub struct TableroBuilder<'a> {
     /// `&str` que representa al tablero del juego. Es la base utilizada para poder construir el [Tablero](../struct.Tablero.html)
     casilleros: &'a str,
 }
 
 impl<'a> TableroBuilder<'a> {
-    ///Construye un nuevo TableroBuilder con el `&str`, que representa al tablero, inicializado que se pase por paramentro.
+    /// Construye un nuevo [`TableroBuilder`] con el `&str` inicializado con el que se pase por parámetro.
+    ///
     /// # Ejemplos
+    ///
     /// ```
+    /// # use buscaminas::tablero::builder::TableroBuilder;
+    /// #
+    /// # fn main() {
     /// // Tablero 4x3 con minas y vacios.
     /// let builder = TableroBuilder::new("**.-..*-***-...-");
     /// // Tablero 2x3 con minas y vacios.
@@ -29,52 +41,60 @@ impl<'a> TableroBuilder<'a> {
     /// // Tablero vacio
     /// let builder_error= TableroBuilder::new("");
     /// assert!(builder_error.is_err());
+    /// # }
     /// ```
+    ///
     /// # Errores
-    /// El TableroBuilder impide que se construyan Tableros sin casilleros, por lo que lanzara un error si se le pasa un string vacío.
+    ///
+    /// El [`TableroBuilder`] impide que se construyan [`Tablero`] sin celdas, por lo que lanzará [`MapaVacio`][ErrorMapa::MapaVacio] si se le pasa un string vacío.
+    /// Esto se considera así ya que no tiene sentido resolver un juego cuyo mapa no existe.
+    ///
     pub fn new(casilleros: &str) -> Result<TableroBuilder, ErrorMapa> {
-        if casilleros == "" {
+        if casilleros.is_empty() {
             return Err(ErrorMapa::MapaVacio);
         }
         Ok(TableroBuilder { casilleros })
     }
-    ///Construye el tablero resuelto. Retorna un Result<Tablero,[ErrorMapa](../../error/io/enum.ErrorMapa.html)
+    ///Construye el [`Tablero`] **resuelto** según el valor con el que fue construido previamente.
+    ///
     /// # Ejemplos
     /// ```
+    /// # use buscaminas::tablero::builder::TableroBuilder;
+    /// # use buscaminas::error::error_mapa::ErrorMapa;
+    /// #
+    /// # fn main() -> Result<(),ErrorMapa> {
     /// // Tablero 2x2 con minas y espacios vacios.
-    /// let builder = TableroBuilder::new("*.-.*-");
-    /// let resultado = builder.crear_tablero().unwrap();
-    /// let esperado = Tablero {
-    ///  ancho: 2,
-    ///  largo: 2,  
-    ///  mapa: vec![Casillero::Mina, Casillero::Espacio(2), Casillero::Espacio(2), Casillero::Mina],  
-    /// };
-    ///
-    /// assert_eq!(resultado, esperado);
+    /// let builder = TableroBuilder::new("*.-.*-")?;
+    /// let resultado = builder.crear_tablero()?;
+    /// println!("Solucion \n{}", resultado);
+    /// # Ok(())
+    /// # }
     /// ```
     /// # Errores
-    /// Retorna el mismo error que el método `cargar_tablero()`. 
-    pub fn crear_tablero(&self) -> Result<Tablero,ErrorMapa> {
-        let tablero = self.cargar_tablero()?;
-        Ok(tablero.resolver())
+    ///
+    /// Retorna el mismo error que el [metodo] `cargar_tablero()`.
+    ///
+    /// [metodo]: ./struct.TableroBuilder.html#method.cargar_tablero
+    ///
+    pub fn crear_tablero(&self) -> Result<Tablero, ErrorMapa> {
+        let t = self.cargar_tablero()?;
+        let resultado = match t.resolver() {
+            Ok(tablero) => tablero,
+            Err(_) => return Err(ErrorMapa::CeldaInexistente),
+        };
+        // No entiendo por que no me deja resotnar el error que retorna resolver().
+        //let resultado = t.resolver()?;
+        Ok(resultado)
     }
 
-    ///Construye el tablero segun el contenido en `casilleros`, sin resolver. Retorna un Result<Tablero,[ErrorMapa](../../error/io/enum.ErrorMapa.html)
-    /// # Ejemplos
-    /// ```
-    /// // Tablero 2x2 con minas y espacios vacios.
-    /// let builder = TableroBuilder::new("*.-.*-");
-    /// let resultado = builder.cargar_tablero().unwrap();
-    /// let esperado = Tablero {
-    ///  ancho: 2,
-    ///  largo: 2,  
-    ///  mapa: vec![Casillero::Mina, Casillero::Espacio(0), Casillero::Espacio(0), Casillero::Mina],  
-    /// };
+    /// Construye un [`Tablero`] sin resolver, segun el contenido en [`casilleros`].
     ///
-    /// assert_eq!(resultado, esperado);
-    /// ```
+    /// [`casilleros`]: ./struct.TableroBuilder.html#structfield.casilleros
+    ///
     /// # Errores
+    ///
     /// Retorna un error en caso de querer construir un Tablero cuyas dimensiones no corresponden a un Tablero rectangular. Además, retorna los mismos errores que el metodo `identificar()`.
+    ///
     fn cargar_tablero(&self) -> Result<Tablero, ErrorMapa> {
         let (mut mapa, mut aux_ancho, mut ancho, mut largo) = (vec![], 0, 0, 0);
 
@@ -84,9 +104,7 @@ impl<'a> TableroBuilder<'a> {
                     Casillero::NuevaLinea => {
                         largo += 1;
                         match ancho != aux_ancho {
-                            true => {
-                                return Err(ErrorMapa::Malformacion("El mapa no es rectangular."))
-                            }
+                            true => return Err(ErrorMapa::MapaMalformado),
                             false => aux_ancho = 0,
                         }
                     }
@@ -106,24 +124,11 @@ impl<'a> TableroBuilder<'a> {
     }
 
     /// Identifica el tipo de casillero segun el `u8` que se presente.
-    /// # Ejemplos
-    /// ```
-    /// let resultado = TableroBuilder::identificar(MINA_ICONO).unwrap();
-    /// let esperado = Casillero::Mina;
-    /// assert_eq!(resultado, esperado);
     ///
-    /// let resultado = TableroBuilder::identificar(ESPACIO_ICONO).unwrap();
-    /// let esperado = Casillero::Espacio(0);
-    /// assert_eq!(resultado, esperado);
-    ///
-    /// let resultado = TableroBuilder::identificar(NUEVA_LINEA_ICONO).unwrap();
-    /// let esperado = Casillero::NuevaLinea;
-    /// assert_eq!(resultado, esperado);
-    ///
-    /// ```
     /// # Errores
+    ///
     /// Retorna ErrorMapa::CaracterDesconocido en caso de que no sea un `u8` que no pertenezca a los iconos aceptados.
-    fn identificar(caracter: u8) -> Result<Casillero, ErrorMapa<'a>> {
+    fn identificar(caracter: u8) -> Result<Casillero, ErrorMapa> {
         match caracter {
             MINA_ICONO => Ok(Casillero::Mina),
             ESPACIO_ICONO => Ok(Casillero::Espacio(0)),
@@ -145,9 +150,9 @@ mod tests {
 
         assert_eq!(resultado, esperado);
     }
-    
+
     #[test]
-    fn crear_tablero_builder_vacio(){
+    fn crear_tablero_builder_vacio() {
         let resultado = TableroBuilder::new("");
         assert!(resultado.is_err());
     }
@@ -229,7 +234,6 @@ mod tests {
         };
         assert_eq!(resultado, esperado);
     }
-
 
     #[test]
     fn crear_tablero_sin_minas() {

@@ -1,8 +1,9 @@
 //! Casillero
 //! `casillero` es un submodulo que contiene los posibles tipos de celdas en un Tablero.
+use crate::tablero::builder::{ESPACIO_ICONO, MINA_ICONO};
 use std::fmt;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 /// `enum` cuyas variantes representan los distintos tipos de celdas presentes en el Tablero del buscaminas.
 pub enum Casillero {
     /// Variante que representa a las minas del Tablero.
@@ -16,10 +17,10 @@ pub enum Casillero {
 impl fmt::Display for Casillero {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Casillero::Mina => write!(f, "X"),
+            Casillero::Mina => write!(f, "{}", MINA_ICONO as char),
             Casillero::Espacio(x) => {
                 if *x == 0 {
-                    write!(f, ".")
+                    write!(f, "{}", ESPACIO_ICONO as char)
                 } else {
                     write!(f, "{}", *x)
                 }

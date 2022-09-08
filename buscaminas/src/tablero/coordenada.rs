@@ -1,101 +1,118 @@
 //! Coordenada
-//! `coordenada` es un submódulo dedicado al `struct` que da nocion de posicion dentro del Tablero.
-#[derive(Debug, PartialEq)]
-/// `struct` que representa la posicion dentro del Tablero de dos dimensiones. No es posible construir una Coordenadas2D con posiciones negativas.
-/// # Observacion
-/// A lo largo del programa `buscaminas` se utilizo el origen de coordenadas como la esquina superior izquierda. Dicha suposicion
-/// afecta al uso de este item.
+//! `coordenada` es un submódulo dedicado al `struct` que da noción de posición dentro del Tablero.
+#[derive(Debug, PartialEq, Eq)]
+/// `struct` que representa la posición dentro del Tablero de dos dimensiones. No es posible construir una Coordenadas2D con posiciones negativas.
+/// # Observación
+/// A lo largo del programa `buscaminas` se utilizó el origen de coordenadas como la esquina superior izquierda. Dicha suposicion
+/// afecta al uso de este ítem.
 pub struct Coordenadas2D {
     x: usize,
     y: usize,
 }
 
 impl Coordenadas2D {
-    ///Construye una Coordenada con las posiciones en los parametros que se les pase.
-    ///# Ejemplos
-    ///```
-    ///let resultado = Coordenadas2D::new(0,0);
-    ///let esperado = Coordenadas2D {
-    ///    x: 0
-    ///    y: 0
-    ///}
-    /// assert_eq!(resultado, esperado);
+    ///Construye un par de [coordenadas][Coordenadas2D] con las posiciones (x,y).
     ///
+    ///# Ejemplos
+    ///
+    ///```
+    /// # use buscaminas::tablero::coordenada::Coordenadas2D;
+    /// #
+    /// # fn main() {
+    /// // Coordenada en el origen
+    ///let resultado = Coordenadas2D::new(0,0);
+    /// // Coordenada en la posicion (5,2). Equivalente a la celda de la sexta columna y tercera fila.
     ///let resultado = Coordenadas2D::new(5,2);
-    ///let esperado = Coordenadas2D {
-    ///    x: 5
-    ///    y: 2
-    ///}
-    /// assert_eq!(resultado, esperado);
+    /// # }
     /// ```
     pub fn new(x: usize, y: usize) -> Coordenadas2D {
         Coordenadas2D { x, y }
     }
 
-    /// Retorna una vector con las Coordenadas2D que sean adyacentes.
+    /// Retorna una vector con las [coordenadas][Coordenadas2D] que sean adyacentes. La adyacencia está dada por cualquier coordenada que este a un movimiento de distancia de la misma. Los movimientos válidos son de manera recta y diagonal coordenada que este a un movimiento de distancia de la misma. Los movimientos válidos son en la dirección recta o diagonal.
+    ///
     ///# Ejemplos
+    ///
     ///```
-    ///let resultado = Coordenadas2D::new(0,0);
-    ///let esperados = vec![Coordenada2D::new(1,0), Coordenada2D::new(1,1), Coordenada2D::new(0,1)];
-    ///assert_eq!(resultado, esperado);
+    /// # use buscaminas::tablero::coordenada::Coordenadas2D;
+    /// #
+    /// # fn main() {
+    /// // Asumiendo un mapa con un tamaño mínimo de 3x3
+    /// # let (ancho_mapa, largo_mapa) = (3,3);
+    ///let coordenada = Coordenadas2D::new(0,0);
+    ///let resultado = coordenada.coordenadas_adyacentes(ancho_mapa,largo_mapa);
+    ///let esperados = vec![ Coordenadas2D::new(0,1), Coordenadas2D::new(1,0), Coordenadas2D::new(1,1)];
+    ///assert_eq!(resultado, esperados);
     ///
-    ///let resultado = Coordenadas2D::new(1,0);
-    ///let esperados = vec![Coordenada2D::new(0,0), Coordenada2D::new(2,0), Coordenada2D::new(0,1), Coordenada2D::new(1,1), Coordenada2D::new(2,1)];
-    ///assert_eq!(resultado, esperado);
+    ///let coordenada = Coordenadas2D::new(1,0);
+    ///let resultado = coordenada.coordenadas_adyacentes(ancho_mapa,largo_mapa);
+    ///let esperados = vec![Coordenadas2D::new(0,0), Coordenadas2D::new(0,1), Coordenadas2D::new(1,1), Coordenadas2D::new(2,0), Coordenadas2D::new(2,1)];
+    ///assert_eq!(resultado, esperados);
     ///
-    ///let resultado = Coordenadas2D::new(1,1);
-    ///let esperados = vec![Coordenada2D::new(0,0), Coordenada2D::new(1,0), Coordenada2D::new(2,0), Coordenada2D::new(0,1), Coordenada2D::new(2,1), Coordenada2D::new(0,2), Coordenada2D::new(1,2), Coordenada2D::new(2,2)];
-    ///assert_eq!(resultado, esperado);
+    ///let coordenada = Coordenadas2D::new(1,1);
+    ///let resultado = coordenada.coordenadas_adyacentes(ancho_mapa,largo_mapa);
+    ///let esperados = vec![Coordenadas2D::new(0,0), Coordenadas2D::new(0,1), Coordenadas2D::new(0,2), Coordenadas2D::new(1,0), Coordenadas2D::new(1,2), Coordenadas2D::new(2,0), Coordenadas2D::new(2,1), Coordenadas2D::new(2,2)];
+    ///assert_eq!(resultado, esperados);
+    ///
+    /// # }
     ///
     /// ```
     pub fn coordenadas_adyacentes(&self, ancho: usize, largo: usize) -> Vec<Coordenadas2D> {
-        let mut coordenadas = Vec::new();
-
         let coordenadas_x = Self::obtener_coordenada_adyacente(self.x, ancho);
         let coordenadas_y = Self::obtener_coordenada_adyacente(self.y, largo);
+        let mut coordenadas = Vec::with_capacity(coordenadas_x.len() * coordenadas_y.len());
         for _x in &coordenadas_x {
             for _y in &coordenadas_y {
                 // Saltearse a si mismo
                 if *_x == self.x && *_y == self.y {
                     continue;
                 }
-                coordenadas.push(Coordenadas2D { x: *_x, y: *_y })
+                coordenadas.push(Coordenadas2D::new(*_x, *_y))
             }
         }
         coordenadas
     }
     /// Retorna una vector con las coordenadas adyacentes en una de las dimensiones.
-    ///# Ejemplos
-    ///```
-    ///let resultado = Self::obtener_coordenada_adyacente(0,3);
-    ///let esperados = vec![1];
-    ///assert_eq!(resultado, esperado);
-    ///
-    ///let resultado = Self::obtener_coordenada_adyacente(1,3);
-    ///let esperados = vec![0,2];
-    ///assert_eq!(resultado, esperado);
-    ///
-    ////let resultado = Self::obtener_coordenada_adyacente(2,3);
-    ///let esperados = vec![1];
-    ///assert_eq!(resultado, esperado);
-    ///
-    /// ```
     fn obtener_coordenada_adyacente(coordenada: usize, dimension: usize) -> Vec<usize> {
-        let mut coordenadas = vec![coordenada];
+        let mut coordenadas = Vec::with_capacity(2);
         if coordenada != 0 {
             coordenadas.push(coordenada - 1);
         }
+        coordenadas.push(coordenada);
         if coordenada != dimension - 1 {
             coordenadas.push(coordenada + 1);
         }
-        coordenadas.sort();
         coordenadas
     }
 
+    /// Retorna la coordenada X, equivalente a la posición en las columnas del mapa.
+    ///
+    /// # Ejemplos
+    /// ```
+    /// # use buscaminas::tablero::coordenada::Coordenadas2D;
+    /// #
+    /// # fn main() {
+    /// let coordenada = Coordenadas2D::new(2,0);
+    /// let resultado = coordenada.x();
+    /// assert_eq!(resultado, 2);
+    /// # }
+    /// ```
     pub fn x(&self) -> usize {
         self.x
     }
 
+    /// Retorna la coordenada X, equivalente a la posición en las columnas del mapa.
+    ///
+    /// # Ejemplos
+    /// ```
+    /// # use buscaminas::tablero::coordenada::Coordenadas2D;
+    /// #
+    /// # fn main() {
+    /// let coordenada = Coordenadas2D::new(0,4);
+    /// let resultado = coordenada.y();
+    /// assert_eq!(resultado, 4);
+    /// # }
+    /// ```
     pub fn y(&self) -> usize {
         self.y
     }
