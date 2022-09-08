@@ -81,16 +81,11 @@ impl Tablero {
     fn calcular_minas_adyacentes(&self, num_casillero: usize) -> Result<u8, ErrorMapa> {
         let (fila, columna) = (num_casillero / self.ancho, num_casillero % self.ancho);
         let coordenada = Coordenadas2D::new(columna, fila);
-        let mut contador = 0;
+        
 
         let adyacentes = self.obtener_adyacentes(coordenada)?;
-
-        for ady in &adyacentes {
-            if let Casillero::Mina = ady {
-                contador += 1
-            }
-        }
-        Ok(contador)
+        Ok(adyacentes.iter().filter( | &c | (**c) == Casillero::Mina).count() as u8)
+        
     }
 
     /// Retorna la cantidad de minas adyacentes a un [`Espacio`], en caso de ser una [`Mina`] se retornará un [vector][Vec] vacío.
