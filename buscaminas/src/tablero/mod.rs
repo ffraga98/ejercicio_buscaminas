@@ -27,15 +27,13 @@ pub struct Tablero {
 
 impl fmt::Display for Tablero {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        for _i in 0..self.largo {
-            for _j in 0..self.ancho {
-                if let Some(casillero) = self.mapa.get(_i * self.ancho + _j) {
-                    write!(f, "{}", casillero)?;
-                };
-            }
-            writeln!(f)?;
-        }
-        write!(f, "")
+        self.mapa
+            .iter()
+            .enumerate()
+            .try_for_each(|(i, c)| match i % self.ancho == self.ancho-1 {
+                true => writeln!(f, "{}", c),
+                false => write!(f, "{}", c),
+            })
     }
 }
 
@@ -49,7 +47,7 @@ impl Tablero {
     /// [metodo]: ./struct.Tablero.html#method.calcular_minas_adyacentes
     ///
     fn resolver(&self) -> Result<Tablero, ErrorMapa> {
-        let mut solucion = Vec::with_capacity(self.ancho*self.largo);
+        let mut solucion = Vec::with_capacity(self.ancho * self.largo);
         for (index, _c) in self.mapa.iter().enumerate() {
             match _c {
                 Casillero::Espacio(_) => {
@@ -81,11 +79,12 @@ impl Tablero {
     fn calcular_minas_adyacentes(&self, num_casillero: usize) -> Result<u8, ErrorMapa> {
         let (fila, columna) = (num_casillero / self.ancho, num_casillero % self.ancho);
         let coordenada = Coordenadas2D::new(columna, fila);
-        
 
         let adyacentes = self.obtener_adyacentes(coordenada)?;
-        Ok(adyacentes.iter().filter( | &c | (**c) == Casillero::Mina).count() as u8)
-        
+        Ok(adyacentes
+            .iter()
+            .filter(|&c| (**c) == Casillero::Mina)
+            .count() as u8)
     }
 
     /// Retorna la cantidad de minas adyacentes a un [`Espacio`], en caso de ser una [`Mina`] se retornará un [vector][Vec] vacío.

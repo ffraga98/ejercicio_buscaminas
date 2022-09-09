@@ -99,21 +99,19 @@ impl<'a> TableroBuilder<'a> {
         let (mut mapa, mut aux_ancho, mut ancho, mut largo) = (vec![], 0, 0, 0);
 
         for _c in self.casilleros.as_bytes() {
-            match Self::identificar(*_c) {
-                Ok(value) => match value {
-                    Casillero::NuevaLinea => {
-                        largo += 1;
-                        match ancho != aux_ancho {
-                            true => return Err(ErrorMapa::MapaMalformado),
-                            false => aux_ancho = 0,
-                        }
+            let casillero = Self::identificar(*_c)?;
+            match casillero {
+                Casillero::NuevaLinea => {
+                    largo += 1;
+                    match ancho == aux_ancho {
+                        true => aux_ancho = 0,
+                        false => return Err(ErrorMapa::MapaMalformado),
                     }
-                    other => {
-                        mapa.push(other);
-                        aux_ancho += 1;
-                    }
-                },
-                Err(error) => return Err(error),
+                }
+                other => {
+                    mapa.push(other);
+                    aux_ancho += 1;
+                }
             }
 
             if largo == 0 {

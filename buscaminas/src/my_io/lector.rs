@@ -72,7 +72,7 @@ impl<'a> Lector<'a> {
                 Err(error) => return Err(ErrorIO::ErrorBufReader(error)),
             };
             palabras.push_str(line.as_str());
-            // Guion bajo en ASCII, separa los saltos de linea
+            // Separa los saltos de linea
             palabras.push_str((NUEVA_LINEA_ICONO as char).to_string().as_str());
         }
         Ok(palabras)
