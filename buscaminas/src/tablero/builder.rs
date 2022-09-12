@@ -50,10 +50,10 @@ impl<'a> TableroBuilder<'a> {
     /// Esto se considera así ya que no tiene sentido resolver un juego cuyo mapa no existe.
     ///
     pub fn new(casilleros: &str) -> Result<TableroBuilder, ErrorMapa> {
-        if casilleros.is_empty() {
-            return Err(ErrorMapa::MapaVacio);
+        match casilleros.is_empty() {
+            false => Ok(TableroBuilder { casilleros }),
+            true => Err(ErrorMapa::MapaVacio),
         }
-        Ok(TableroBuilder { casilleros })
     }
     ///Construye el [`Tablero`] **resuelto** según el valor con el que fue construido previamente.
     ///
@@ -78,8 +78,7 @@ impl<'a> TableroBuilder<'a> {
     ///
     pub fn crear_tablero(&self) -> Result<Tablero, ErrorMapa> {
         let t = self.cargar_tablero()?;
-        let resultado = t.resolver()?;
-        Ok(resultado)
+        t.resolver()
     }
 
     /// Construye un [`Tablero`] sin resolver, segun el contenido en [`casilleros`].
