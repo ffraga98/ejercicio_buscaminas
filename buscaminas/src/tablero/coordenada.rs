@@ -1,9 +1,12 @@
 //! Coordenada
 //! `coordenada` es un submódulo dedicado al `struct` que da noción de posición dentro del Tablero.
 #[derive(Debug, PartialEq, Eq)]
-/// `struct` que representa la posición dentro del Tablero de dos dimensiones. No es posible construir una Coordenadas2D con posiciones negativas.
-/// # Observación
-/// A lo largo del programa `buscaminas` se utilizó el origen de coordenadas como la esquina superior izquierda. Dicha suposicion
+/// `struct` que representa la posición dentro del Tablero de dos dimensiones.
+///
+/// No es posible construir una Coordenadas2D con posiciones negativas.
+///
+/// ### Observación
+/// A lo largo del programa `buscaminas` se utilizó el origen de coordenadas como la *esquina superior izquierda*. Dicha suposicion
 /// afecta al uso de este ítem.
 pub struct Coordenadas2D {
     x: usize,
@@ -21,7 +24,8 @@ impl Coordenadas2D {
     /// # fn main() {
     /// // Coordenada en el origen
     ///let resultado = Coordenadas2D::new(0,0);
-    /// // Coordenada en la posicion (5,2). Equivalente a la celda de la sexta columna y tercera fila.
+    /// // Coordenada en la posicion (5,2).
+    /// // Equivalente a la celda de la sexta columna y tercera fila.
     ///let resultado = Coordenadas2D::new(5,2);
     /// # }
     /// ```
@@ -29,7 +33,9 @@ impl Coordenadas2D {
         Coordenadas2D { x, y }
     }
 
-    /// Retorna una vector con las [coordenadas][Coordenadas2D] que sean adyacentes. La adyacencia está dada por cualquier coordenada que este a un movimiento de distancia de la misma. Los movimientos válidos son de manera recta y diagonal coordenada que este a un movimiento de distancia de la misma. Los movimientos válidos son en la dirección recta o diagonal.
+    /// Retorna una vector con las [coordenadas][Coordenadas2D] que sean adyacentes.
+    ///
+    /// La *adyacencia* está dada por cualquier coordenada que este a un movimiento de distancia de la misma. Los movimientos válidos son en la dirección recta o diagonal.
     ///
     ///# Ejemplos
     ///
@@ -41,17 +47,36 @@ impl Coordenadas2D {
     /// # let (ancho_mapa, largo_mapa) = (3,3);
     ///let coordenada = Coordenadas2D::new(0,0);
     ///let resultado = coordenada.coordenadas_adyacentes(ancho_mapa,largo_mapa);
-    ///let esperados = vec![ Coordenadas2D::new(0,1), Coordenadas2D::new(1,0), Coordenadas2D::new(1,1)];
+    ///let esperados = vec![
+    ///                     Coordenadas2D::new(0,1),
+    ///                     Coordenadas2D::new(1,0),
+    ///                     Coordenadas2D::new(1,1)
+    ///                    ];
     ///assert_eq!(resultado, esperados);
     ///
     ///let coordenada = Coordenadas2D::new(1,0);
     ///let resultado = coordenada.coordenadas_adyacentes(ancho_mapa,largo_mapa);
-    ///let esperados = vec![Coordenadas2D::new(0,0), Coordenadas2D::new(0,1), Coordenadas2D::new(1,1), Coordenadas2D::new(2,0), Coordenadas2D::new(2,1)];
+    ///let esperados = vec![
+    ///                     Coordenadas2D::new(0,0),
+    ///                     Coordenadas2D::new(0,1),
+    ///                     Coordenadas2D::new(1,1),
+    ///                     Coordenadas2D::new(2,0),
+    ///                     Coordenadas2D::new(2,1)
+    ///                     ];
     ///assert_eq!(resultado, esperados);
     ///
     ///let coordenada = Coordenadas2D::new(1,1);
     ///let resultado = coordenada.coordenadas_adyacentes(ancho_mapa,largo_mapa);
-    ///let esperados = vec![Coordenadas2D::new(0,0), Coordenadas2D::new(0,1), Coordenadas2D::new(0,2), Coordenadas2D::new(1,0), Coordenadas2D::new(1,2), Coordenadas2D::new(2,0), Coordenadas2D::new(2,1), Coordenadas2D::new(2,2)];
+    ///let esperados = vec![
+    ///                     Coordenadas2D::new(0,0),
+    ///                     Coordenadas2D::new(0,1),
+    ///                     Coordenadas2D::new(0,2),
+    ///                     Coordenadas2D::new(1,0),
+    ///                     Coordenadas2D::new(1,2),
+    ///                     Coordenadas2D::new(2,0),
+    ///                     Coordenadas2D::new(2,1),
+    ///                     Coordenadas2D::new(2,2)
+    ///                     ];
     ///assert_eq!(resultado, esperados);
     ///
     /// # }

@@ -1,5 +1,5 @@
 //! # Builder
-//! `builder` es un submódulo que contiene el builder [`TableroBuilder`] para construir la entidad [`Tablero`] que contiene la lógica para resolver el problema
+//! `builder` es un submódulo que contiene el builder [`TableroBuilder`] para construir la entidad [`Tablero`] que contiene la lógica para resolver el problema.
 //!
 //! [`Tablero`]: ../struct.Tablero.html
 
@@ -19,14 +19,16 @@ pub const MINA_ICONO: u8 = b'*';
 pub const ESPACIO_ICONO: u8 = b'.';
 
 #[derive(Debug, PartialEq, Eq)]
-/// Estructura que contiene la representación del tablero en el formato inicial. Dicho formato debe respetar los carácteres predefinidos en las constantes que representan a las [minas][MINA_ICONO] y a los [espacios][ESPACIO_ICONO] si se desea construir satisfactoriamente el [`Tablero`].
+/// Estructura que contiene la representación del tablero en el formato inicial.
+///
+/// Dicho formato debe respetar los carácteres predefinidos en las constantes que representan a las [minas][MINA_ICONO] y a los [espacios][ESPACIO_ICONO] si se desea construir satisfactoriamente el [`Tablero`].
 pub struct TableroBuilder<'a> {
     /// `&str` que representa al tablero del juego. Es la base utilizada para poder construir el [Tablero](../struct.Tablero.html)
     casilleros: &'a str,
 }
 
 impl<'a> TableroBuilder<'a> {
-    /// Construye un nuevo [`TableroBuilder`] con el `&str` inicializado con el que se pase por parámetro.
+    /// Construye un nuevo [`TableroBuilder`] con un `&str` correspondiente a la configuración del mapa a construir.
     ///
     /// # Ejemplos
     ///
@@ -47,7 +49,7 @@ impl<'a> TableroBuilder<'a> {
     /// # Errores
     ///
     /// El [`TableroBuilder`] impide que se construyan [`Tablero`] sin celdas, por lo que lanzará [`MapaVacio`][ErrorMapa::MapaVacio] si se le pasa un string vacío.
-    /// Esto se considera así ya que no tiene sentido resolver un juego cuyo mapa no existe.
+    /// Esto se considera así ya que *no tiene sentido* resolver un juego cuyo mapa no existe.
     ///
     pub fn new(casilleros: &str) -> Result<TableroBuilder, ErrorMapa> {
         match casilleros.is_empty() {
@@ -55,7 +57,7 @@ impl<'a> TableroBuilder<'a> {
             true => Err(ErrorMapa::MapaVacio),
         }
     }
-    ///Construye el [`Tablero`] **resuelto** según el valor con el que fue construido previamente.
+    ///Construye el [`Tablero`] **resuelto** según el valor con el que fué construido previamente.
     ///
     /// # Ejemplos
     /// ```
@@ -72,22 +74,25 @@ impl<'a> TableroBuilder<'a> {
     /// ```
     /// # Errores
     ///
-    /// Retorna el mismo error que el [metodo] `cargar_tablero()`.
+    ///  Retorna el error sobre una [malformación] del mapa cuando el tablero a construir no corresponden a un Tablero rectangular.
     ///
-    /// [metodo]: ./struct.TableroBuilder.html#method.cargar_tablero
+    ///  En caso de que no sea un `u8` que no pertenezca a los iconos aceptados, retornará [CaracterDesconocido]
+    ///
+    /// [malformación]: ErrorMapa::MapaMalformado
+    /// [CaracterDesconocido]: ErrorMapa::CaracterDesconocido
     ///
     pub fn crear_tablero(&self) -> Result<Tablero, ErrorMapa> {
         let t = self.cargar_tablero()?;
         t.resolver()
     }
 
-    /// Construye un [`Tablero`] sin resolver, segun el contenido en [`casilleros`].
+    /// Construye un [`Tablero`] sin resolver, según el contenido en [`casilleros`].
     ///
     /// [`casilleros`]: ./struct.TableroBuilder.html#structfield.casilleros
     ///
     /// # Errores
     ///
-    /// Retorna un error en caso de querer construir un Tablero cuyas dimensiones no corresponden a un Tablero rectangular. Además, retorna los mismos errores que el metodo `identificar()`.
+    /// Retorna un error en caso de querer construir un Tablero cuyas dimensiones no corresponden a un Tablero rectangular. Además, retorna los mismos errores que el método `identificar()`.
     ///
     fn cargar_tablero(&self) -> Result<Tablero, ErrorMapa> {
         let (mut mapa, mut aux_ancho, mut ancho, mut largo) = (vec![], 0, 0, 0);
@@ -115,11 +120,13 @@ impl<'a> TableroBuilder<'a> {
         Ok(Tablero { largo, ancho, mapa })
     }
 
-    /// Identifica el tipo de casillero segun el `u8` que se presente.
+    /// Identifica el tipo de casillero según el `u8` que se presente.
     ///
     /// # Errores
     ///
-    /// Retorna ErrorMapa::CaracterDesconocido en caso de que no sea un `u8` que no pertenezca a los iconos aceptados.
+    /// Retorna [CaracterDesconocido] en caso de que no sea un `u8` que no pertenezca a los iconos aceptados.
+    ///
+    /// [CaracterDesconocido][ErrorMapa::CaracterDesconocido]
     fn identificar(caracter: u8) -> Result<Casillero, ErrorMapa> {
         match caracter {
             MINA_ICONO => Ok(Casillero::Mina),

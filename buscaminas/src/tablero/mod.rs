@@ -1,5 +1,6 @@
-//! Tablero
-//! `tablero` es el modulo que contiene todo lo relacionado al mapa del problema a resolver.
+//! # Tablero
+//!
+//! `tablero` es el módulo que contiene todo lo relacionado al mapa del problema a resolver.
 use crate::error::error_mapa::ErrorMapa;
 use crate::tablero::casillero::Casillero;
 use crate::tablero::coordenada::Coordenadas2D;
@@ -11,11 +12,11 @@ pub mod casillero;
 pub mod coordenada;
 
 #[derive(Debug, PartialEq, Eq)]
-/// Estructura que contiene toda la informacin necesaria para resolver y contener la solucion del problema.
+/// Estructura que contiene toda la información necesaria para resolver y contener la solución del problema.
 ///
-/// # Observaciones
+/// ### Observacion
 ///
-/// - El Tablero solo puede contener mapas que sea rectangulares, por eso es que posee los campos `ancho` y `largo`.
+/// - El Tablero solo puede contener mapas que sea *rectangulares*.
 pub struct Tablero {
     /// Campo utilizado para indicar el largo del tablero.
     largo: usize,
@@ -42,9 +43,9 @@ impl Tablero {
     ///
     /// # Errores
     ///
-    /// Retornara el error dado por el [metodo] que calcula la cantidad de minas adyacentes.
+    /// Retornara el error dado por el [método] que calcula la cantidad de minas adyacentes.
     ///
-    /// [metodo]: ./struct.Tablero.html#method.calcular_minas_adyacentes
+    /// [método]: ./struct.Tablero.html#method.calcular_minas_adyacentes
     ///
     fn resolver(&self) -> Result<Tablero, ErrorMapa> {
         let mut solucion = Vec::with_capacity(self.ancho * self.largo);
@@ -64,17 +65,17 @@ impl Tablero {
         })
     }
 
-    /// Retorna la cantidad de [minas][Mina] adyacentes a una celda determinada. En caso de que la coodenada corresponda a una [`Mina`][Mina], retornará `0`. Para ver la numeracion de las celdas dentro de [mapa] leer el siguiente [metodo].
+    /// Retorna la cantidad de [minas][Mina] adyacentes a una celda determinada. En caso de que la coodenada corresponda a una [`Mina`][Mina], retornará `0`. Para ver la numeracion de las celdas dentro de [mapa] leer el siguiente [método].
     ///
     /// [Mina]: Casillero::Mina
-    /// [metodo]: ./struct.Tablero.html#method.obtener_indice
+    /// [método]: ./struct.Tablero.html#method.obtener_indice
     /// [mapa]: ./struct.Tablero.html#structfield.mapa
     ///
     /// # Errores
     ///
-    /// Retornara el error lanzado por el [metodo] que obtiene los casilleros adyacentes.
+    /// Retornara el error lanzado por el [método] que obtiene los casilleros adyacentes.
     ///
-    /// [metodo]: ./struct.Tablero.html#method.obtener_adyacentes
+    /// [método]: ./struct.Tablero.html#method.obtener_adyacentes
     ///
     fn calcular_minas_adyacentes(&self, num_casillero: usize) -> Result<u8, ErrorMapa> {
         let (fila, columna) = (num_casillero / self.ancho, num_casillero % self.ancho);
@@ -91,11 +92,11 @@ impl Tablero {
     ///
     /// # Errores
     ///
-    /// Retornara el mismo error que retorne el [metodo] encargado de obtener casilleros del mapa.
+    /// Retornara el mismo error que retorne el [método] encargado de obtener casilleros del mapa.
     ///
     /// [`Mina`]: Casillero::Mina
     /// [`Espacio`]: Casillero::Espacio
-    /// [metodo]: ./struct.Tablero.html#method.obtener_casillero
+    /// [método]: ./struct.Tablero.html#method.obtener_casillero
     ///
     fn obtener_adyacentes(&self, coordenada: Coordenadas2D) -> Result<Vec<&Casillero>, ErrorMapa> {
         if let Casillero::Mina = self.obtener_casillero(&coordenada)? {
@@ -108,7 +109,7 @@ impl Tablero {
             .collect()
     }
 
-    /// Retorna el casillero correspondiente a la [coordenada] que se pase por parametro.
+    /// Retorna el casillero correspondiente a la [coordenada] que se pase por parámetro.
     ///
     /// # Errores
     ///

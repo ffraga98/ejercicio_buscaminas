@@ -1,3 +1,6 @@
+//! # ErrorIO
+//! 
+//! `error_io` permite representar todos los errores que pueden presentarse a la hora de la lectura o escritura de los archivos. 
 use std::fmt;
 use std::io;
 

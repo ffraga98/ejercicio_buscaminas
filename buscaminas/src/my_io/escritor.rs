@@ -1,5 +1,5 @@
 //! # Escritor
-//! `escritor` es un submodulo para facilitar la escritura de contenido en archivos de texto.
+//! `escritor` es un submódulo para facilitar la escritura de contenido en archivos de texto.
 
 use crate::error::error_io::ErrorIO;
 use std::fmt::Display;
@@ -14,9 +14,7 @@ pub struct Escritor<'a> {
 }
 
 impl<'a> Escritor<'a> {
-    ///Construye un nuevo [`Escritor`], con el [path] inicializado con el `&str` que se pase por paramentro.
-    ///
-    /// [path]: ./struct.Escritor.html#structfield.path
+    ///Construye un nuevo [`Escritor`], con el path inicializado con el `&str` que se pase por parametro.
     ///
     /// # Ejemplos
     /// ```
@@ -30,7 +28,10 @@ impl<'a> Escritor<'a> {
         Escritor { path }
     }
 
-    /// Escribe item, que recibe por referencia, en el archivo `path`. El item puede ser cualquiera que implemente el Trait [`Display`].
+    /// Escribe el item, que recibe por referencia, en el archivo con el que se haya [incializado][new] el [`Escritor`]. El item puede ser cualquiera que implemente el Trait [`Display`].
+    ///
+    /// [new]: ./struct.Escritor.html#method.new
+    ///
     /// # Ejemplos
     /// ```
     /// # use buscaminas::my_io::escritor::Escritor;
@@ -47,7 +48,7 @@ impl<'a> Escritor<'a> {
     /// ```
     /// # Errores
     /// Retorna un [`ErrorIO`] con dos valores posibles.
-    /// - En caso de fallar la creacion del archivo, se lanza un [`ErrorFile`]
+    /// - En caso de fallar la creación del archivo, se lanza un [`ErrorFile`]
     /// - En caso de fallar la escritura en el archivo, se lanza un [`ErrorWrite`]
     ///
     /// [`ErrorWrite`]: ../../error/enum.ErrorIO.html#variant.ErrorWrite

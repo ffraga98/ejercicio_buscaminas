@@ -1,3 +1,6 @@
+//! ErrorMapa
+//! 
+//! `error_mapa` permite representar todos los errores que pueden presentarse a la hora de la construcción del mapa que representa el problema a solucionar.
 use std::fmt;
 
 #[derive(PartialEq, Eq)]

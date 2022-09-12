@@ -1,5 +1,5 @@
 //! # Lector
-//! `lector` es un submodulo para facilitar la lectura de contenido en archivos de texto.
+//! `lector` es un submódulo para facilitar la lectura de contenido en archivos de texto.
 
 use crate::error::error_io::ErrorIO;
 use crate::tablero::builder::NUEVA_LINEA_ICONO;
@@ -14,9 +14,7 @@ pub struct Lector<'a> {
 }
 
 impl<'a> Lector<'a> {
-    ///Construye un Lector con el campo [path] igual al que se le pasa por parametro.    
-    ///
-    /// [path]: ./struct.Lector.html#structfield.path
+    ///Construye un [`Lector`] con incializaco con el archivo correspondiente al `path` que se le pasa por parámetro.    
     ///
     /// # Ejemplos
     /// ```
@@ -52,7 +50,6 @@ impl<'a> Lector<'a> {
     /// Retorna un [`ErrorIO`] con dos valores posibles.
     ///
     /// - En caso de fallar al abrir el archivo, se lanza un [`ErrorFile`]
-    ///
     /// - En caso de fallar el almacenamiento de las lineas leídas en memoria, se lanza un [`ErrorBufReader`]
     ///
     /// [`ErrorBufReader`]: ../../error/enum.ErrorIO.html#variant.ErrorBufReader
