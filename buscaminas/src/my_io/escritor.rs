@@ -53,14 +53,8 @@ impl<'a> Escritor<'a> {
     /// [`ErrorWrite`]: ../../error/enum.ErrorIO.html#variant.ErrorWrite
     /// [`ErrorFile`]: ../../error/enum.ErrorIO.html#variant.ErrorFile
     pub fn imprimir_item<T: Display>(&self, item: &T) -> Result<(), ErrorIO> {
-        let mut f = match fs::File::create(self.path) {
-            Ok(f) => f,
-            Err(error) => return Err(ErrorIO::ErrorFile(error)),
-        };
-        if let Err(error) = f.write_all(item.to_string().as_bytes()) {
-            return Err(ErrorIO::ErrorWrite(error));
-        };
-        Ok(())
+        let mut f = fs::File::create(self.path).map_err( ErrorIO::ErrorFile )?;
+        f.write_all(item.to_string().as_bytes()).map_err(ErrorIO::ErrorBufReader )
     }
 }
 
