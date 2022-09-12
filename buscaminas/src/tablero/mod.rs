@@ -30,7 +30,7 @@ impl fmt::Display for Tablero {
         self.mapa
             .iter()
             .enumerate()
-            .try_for_each(|(i, c)| match i % self.ancho == self.ancho-1 {
+            .try_for_each(|(i, c)| match i % self.ancho == self.ancho - 1 {
                 true => writeln!(f, "{}", c),
                 false => write!(f, "{}", c),
             })
@@ -119,10 +119,9 @@ impl Tablero {
     /// [indice]: ./struct.Tablero.html#method.obtener_indice
     /// [coordenada]: coordenada::Coordenadas2D
     fn obtener_casillero(&self, coordenada: &Coordenadas2D) -> Result<&Casillero, ErrorMapa> {
-        match self.mapa.get(self.obtener_indice(coordenada)?) {
-            None => Err(ErrorMapa::CeldaInexistente),
-            Some(c) => Ok(c),
-        }
+        self.mapa
+            .get(self.obtener_indice(coordenada)?)
+            .ok_or(ErrorMapa::CeldaInexistente)
     }
     /// Retorna el indice correspondiente a una coordenada dentro del campo [mapa].
     /// La numeracion esta dada por como se almaceno el [mapa].
@@ -139,10 +138,10 @@ impl Tablero {
     /// ```
     fn obtener_indice(&self, coordenada: &Coordenadas2D) -> Result<usize, ErrorMapa> {
         let (x, y) = (coordenada.x(), coordenada.y());
-        if self.ancho < x && self.largo < y {
-            return Err(ErrorMapa::CeldaInexistente);
+        match self.ancho < x && self.largo < y {
+            false => Ok((y + 1) * self.ancho - (self.ancho - x)),
+            true => Err(ErrorMapa::CeldaInexistente),
         }
-        Ok((y + 1) * self.ancho - (self.ancho - x))
     }
 }
 
