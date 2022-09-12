@@ -78,12 +78,7 @@ impl<'a> TableroBuilder<'a> {
     ///
     pub fn crear_tablero(&self) -> Result<Tablero, ErrorMapa> {
         let t = self.cargar_tablero()?;
-        let resultado = match t.resolver() {
-            Ok(tablero) => tablero,
-            Err(_) => return Err(ErrorMapa::CeldaInexistente),
-        };
-        // No entiendo por que no me deja resotnar el error que retorna resolver().
-        //let resultado = t.resolver()?;
+        let resultado = t.resolver()?;
         Ok(resultado)
     }
 
