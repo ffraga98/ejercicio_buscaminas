@@ -17,14 +17,13 @@ pub enum Casillero {
 impl fmt::Display for Casillero {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Casillero::Mina => write!(f, "{}", MINA_ICONO as char),
             Casillero::Espacio(x) => {
-                if *x == 0 {
-                    write!(f, "{}", ESPACIO_ICONO as char)
-                } else {
-                    write!(f, "{}", *x)
+                match *x == 0 {
+                    true => write!(f, "{}", ESPACIO_ICONO as char),
+                    false => write!(f, "{}", *x),
                 }
             }
+            Casillero::Mina => write!(f, "{}", MINA_ICONO as char),
             Casillero::NuevaLinea => writeln!(f),
         }
     }
