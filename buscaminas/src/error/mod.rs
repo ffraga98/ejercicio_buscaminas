@@ -1,7 +1,7 @@
 //! # Error
-//! 
+//!
 //! `error` es un módulo con `enums` que representan los distintas categorías de errores que pueden ocurrir en el programa.
-//! 
+//!
 //! Su función principal es encapsular las categorías representadas en cada submódulo y así permitir un manejo del error de manera uníficada en el nivel más alto de la aplicación.
 const ESC_EXIT: &str = "\x1b[0;0m";
 const COLOR_ERROR: &str = "\x1b[31m";
@@ -14,9 +14,9 @@ pub mod error_io;
 pub mod error_mapa;
 
 pub enum Error {
-    /// Variante que encapusla los [errores provocados por el mapa][ErrorMapa]. 
+    /// Variante que encapusla los [errores provocados por el mapa][ErrorMapa].
     Emapa(ErrorMapa),
-    /// Variante que encapusla los [errores causados en la entrada/salida][ErrorIO] de información. 
+    /// Variante que encapusla los [errores causados en la entrada/salida][ErrorIO] de información.
     Eio(ErrorIO),
 }
 

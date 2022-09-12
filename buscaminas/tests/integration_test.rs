@@ -1,7 +1,7 @@
-use buscaminas::my_io::lector::Lector;
 use buscaminas::my_io::escritor::Escritor;
-use buscaminas::ARCHIVO_SOLUCION;
+use buscaminas::my_io::lector::Lector;
 use buscaminas::tablero::builder::TableroBuilder;
+use buscaminas::ARCHIVO_SOLUCION;
 
 #[test]
 fn resuelve_test1() {
