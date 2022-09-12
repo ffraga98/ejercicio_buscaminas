@@ -60,17 +60,11 @@ impl<'a> Lector<'a> {
     ///
     ///
     pub fn leer_archivo(&self) -> Result<String, ErrorIO> {
-        let file = match File::open(self.path) {
-            Ok(f) => f,
-            Err(error) => return Err(ErrorIO::ErrorFile(error)),
-        };
+        let file = File::open(self.path).map_err(ErrorIO::ErrorFile)?;
         let reader = BufReader::new(file);
         let mut palabras = String::new();
         for line in reader.lines() {
-            let line = match line {
-                Ok(l) => l,
-                Err(error) => return Err(ErrorIO::ErrorBufReader(error)),
-            };
+            let line = line.map_err(ErrorIO::ErrorBufReader)?;
             palabras.push_str(line.as_str());
             // Separa los saltos de linea
             palabras.push_str((NUEVA_LINEA_ICONO as char).to_string().as_str());
